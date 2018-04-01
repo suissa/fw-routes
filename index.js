@@ -30,14 +30,14 @@ const server = http.createServer(function(req, res){
 
             data += body;
 
-        }).on('end', function(){
-            res.writeHead(200, {"Content-Type": "text/plain"});
+        });
+        req.on('end', function(){
+            res.writeHead(200, {"Content-Type": "application/json"});
 
             console.log(data)
             var value = {
                 "sucess": true
             }
-            res.write(JSON.stringify(value));
             res.end('OK');
         });
     }else{
