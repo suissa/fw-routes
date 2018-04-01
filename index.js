@@ -6,18 +6,7 @@ const teste =[ {
   Age: 17
 }]
 
-const ERRORS = {
-  '404': (res, url) => {
-    const err = {
-      status: "error",
-      message: `Rota "${url}" não encontrada`,
-      code: 404
-    }
-    res.writeHead(404, { 'Content-Type': 'application/json' })
-    res.write(sendJSON(err))
-    res.end()
-  }
-}
+const ERRORS = require('./lib/errors')
 
 const sendJSON = (res, json) => {
   res.write(JSON.stringify(json))
@@ -90,63 +79,8 @@ const actions = (req, res) => ({
   },
 })
 
-const run = (req, res, next) => {
-  const Controller = actions(req, res)
-  var url = req.url
-  var method = req.method
-
-
-  switch (method) {
-    case 'GET': {
-
-      console.log('------------------------------------');
-      console.log('url: ', url);
-      console.log('------------------------------------');
-      switch (url) {
-        case '/': {
-          res.writeHead(200, { 'Content-Type': 'application/json' })
-          Controller.find(teste)
-          break;
-        }
-        case `${url}`: {
-          res.writeHead(200, { 'Content-Type': 'application/json' })
-          Controller.findOne(teste)
-          break;
-        } 
-        default: {
-          return ERRORS[404](res, url)
-          break;
-        }
-      }
-
-      break;
-    }
-    case 'POST': {
-
-      switch (url) {
-        case '/': {
-          res.writeHead(200, { 'Content-Type': 'application/json' })
-          return Controller.create()
-          break;
-        }
-        // case '/get': {
-        //   res.writeHead(200, { 'Content-Type': 'application/json' })
-        //   Controller.findOne(teste)
-        //   break;
-        // }
-        default: {
-          return ERRORS[404](res, url)
-          break;
-        }
-      }
-      break;
-    }
-    default:
-      break;
-  }
-}
 const router = {
-  run
+  run: require('./lib/run')(actions, ERRORS)
 }
 const server = http.createServer( ( req, res, next ) => {
   res.writeHead( 200, { 'Content-Type': 'application/json' } )
