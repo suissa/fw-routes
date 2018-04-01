@@ -51,18 +51,24 @@ const getResponseFindOneSuccess = (data) => ({
   data
 })
 
+const ModelCeate = (req, res) => {
+
+  let data = ''
+
+  req.on('data', (body) => {
+    data += body
+  })
+
+  req.on('end', () => sendJSON(
+    setResponseSuccess(res, setResponseJSON()),
+    getResponseCreateSuccess(data))
+  )
+  // return data
+}
+
 const actions = (req, res) => ({
   create: (_data) => { 
-    let data = ''
-
-    req.on('data', (body) => {
-      data += body
-    })
-
-    req.on('end', () => sendJSON(
-      setResponseSuccess(res, setResponseJSON()), 
-      getResponseCreateSuccess(data))
-    )
+    return ModelCeate(req, res)
   },
   find: (data) => { 
     return sendJSON(
