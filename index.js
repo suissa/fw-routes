@@ -6,8 +6,74 @@ const teste =[ {
   Age: 17
 }]
 
-const run = (req, res, next) => {
+const ERRORS = {
+  '404': (res, url) => {
+    const err = {
+      status: "error",
+      message: `Rota "${url}" não encontrada`,
+      code: 404
+    }
+    res.writeHead(404, { 'Content-Type': 'application/json' })
+    res.write(sendJSON(err))
+    res.end()
+  }
+}
 
+const sendJSON = (res, json) => {
+  res.write(JSON.stringify(json))
+  res.end()
+}
+
+const setResponseJSON = () => ({ 'Content-Type': 'application/json' })
+
+const setResponseSuccess = (res, header) => {
+  res.writeHead(200, header)
+  return res
+}
+
+const actions = (req, res) => ({
+  create: (_data) => { 
+    let data = ''
+
+    req.on('data', (body) => {
+      data += body
+      console.log('on data:', data)
+    })
+    req.on('end', () => {
+      // res.writeHead(200, { 'Content-Type': 'application/json' })
+      // res = setResponseJSON(res)
+      res = setResponseSuccess(res, setResponseJSON())
+
+      const response = {
+        status: "success",
+        message: `Objeto criado com sucesso`,
+        data
+      }
+
+      return sendJSON(res, response)
+    })
+    // res.end()
+  },
+  find: (data) => { 
+    res.write(sendJSON(data)) 
+    res.end()
+  },
+  findOne: (data) => { 
+    res.write(sendJSON(data[0])) 
+    res.end()
+  },
+  update: (data) => { 
+    res.write(sendJSON(data)) 
+    res.end()
+  },
+  remove: (data) => { 
+    res.write(sendJSON(data)) 
+    res.end()
+  },
+})
+
+const run = (req, res, next) => {
+  const Controller = actions(req, res)
   var url = req.url
   var method = req.method
 
@@ -17,19 +83,16 @@ const run = (req, res, next) => {
       switch (url) {
         case '/': {
           res.writeHead(200, { 'Content-Type': 'application/json' })
-          res.write(JSON.stringify(teste))
-          res.end()
+          Controller.find(teste)
           break;
         }
         case '/get': {
           res.writeHead(200, { 'Content-Type': 'application/json' })
-          res.write(JSON.stringify(teste[0]))
-          res.end()
+          Controller.findOne(teste)
           break;
         } 
         default: {
-        res.writeHead(404)
-          res.write('<h1>ERROR</h1>')
+          return ERRORS[404](res, url)
           break;
         }
       }
@@ -38,24 +101,21 @@ const run = (req, res, next) => {
     }
     case 'POST': {
 
-      if (url === '/') {
-        var data = ''
-
-        req.on('data', (body) => {
-          data += body
-        })
-        req.on('end', () => {
+      switch (url) {
+        case '/': {
           res.writeHead(200, { 'Content-Type': 'application/json' })
-
-          console.log(data)
-          var value = {
-            'sucess': true
-          }
-          res.end('OK')
-        })
-      } else {
-        res.writeHead(404)
-        res.end('<html><body>404</body></html>')
+          return Controller.create()
+          break;
+        }
+        // case '/get': {
+        //   res.writeHead(200, { 'Content-Type': 'application/json' })
+        //   Controller.findOne(teste)
+        //   break;
+        // }
+        default: {
+          return ERRORS[404](res, url)
+          break;
+        }
       }
       break;
     }
