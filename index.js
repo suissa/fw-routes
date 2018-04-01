@@ -36,6 +36,21 @@ const getResponseCreateSuccess = (data) => ({
   message: `Objeto criado com sucesso`,
   data
 })
+
+
+const getResponseFindSuccess = (data) => ({
+  status: "success",
+  message: `Busca retornada com sucesso`,
+  total: data.length,
+  data
+})
+
+const getResponseFindOneSuccess = (data) => ({
+  status: "success",
+  message: `Consulta retornada com sucesso`,
+  data
+})
+
 const actions = (req, res) => ({
   create: (_data) => { 
     let data = ''
@@ -50,12 +65,14 @@ const actions = (req, res) => ({
     )
   },
   find: (data) => { 
-    res.write(sendJSON(data)) 
-    res.end()
+    return sendJSON(
+      setResponseSuccess(res, setResponseJSON()),
+      getResponseFindOneSuccess(data))
   },
-  findOne: (data) => { 
-    res.write(sendJSON(data[0])) 
-    res.end()
+  findOne: (data) => {
+    return sendJSON(
+      setResponseSuccess(res, setResponseJSON()),
+      getResponseFindSuccess(data[0]))
   },
   update: (data) => { 
     res.write(sendJSON(data)) 
