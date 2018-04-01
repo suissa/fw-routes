@@ -56,14 +56,6 @@ const actions = ({
   },
 })
 
-const routes = [
-  {
-    method: 'GET',
-    path: '/',
-    action: 'find'
-  }
-]
-
 const router = {
   run: require('./lib/run')(actions, ERRORS)
 }
