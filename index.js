@@ -95,16 +95,20 @@ const run = (req, res, next) => {
   var url = req.url
   var method = req.method
 
+
   switch (method) {
     case 'GET': {
 
+      console.log('------------------------------------');
+      console.log('url: ', url);
+      console.log('------------------------------------');
       switch (url) {
         case '/': {
           res.writeHead(200, { 'Content-Type': 'application/json' })
           Controller.find(teste)
           break;
         }
-        case '/get': {
+        case `${url}`: {
           res.writeHead(200, { 'Content-Type': 'application/json' })
           Controller.findOne(teste)
           break;
