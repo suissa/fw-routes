@@ -31,28 +31,23 @@ const setResponseSuccess = (res, header) => {
   return res
 }
 
+const getResponseCreateSuccess = (data) => ({
+  status: "success",
+  message: `Objeto criado com sucesso`,
+  data
+})
 const actions = (req, res) => ({
   create: (_data) => { 
     let data = ''
 
     req.on('data', (body) => {
       data += body
-      console.log('on data:', data)
     })
-    req.on('end', () => {
-      // res.writeHead(200, { 'Content-Type': 'application/json' })
-      // res = setResponseJSON(res)
-      res = setResponseSuccess(res, setResponseJSON())
 
-      const response = {
-        status: "success",
-        message: `Objeto criado com sucesso`,
-        data
-      }
-
-      return sendJSON(res, response)
-    })
-    // res.end()
+    req.on('end', () => sendJSON(
+      setResponseSuccess(res, setResponseJSON()), 
+      getResponseCreateSuccess(data))
+    )
   },
   find: (data) => { 
     res.write(sendJSON(data)) 
