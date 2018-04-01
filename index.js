@@ -8,37 +8,14 @@ const teste =[ {
 
 const ERRORS = require('./lib/errors')
 
-const sendJSON = (res, json) => {
-  res.write(JSON.stringify(json))
-  res.end()
-}
-
-const setResponseJSON = () => ({ 'Content-Type': 'application/json' })
-
-const setResponseSuccess = (res, header) => {
-  res.writeHead(200, header)
-  return res
-}
-
-const getResponseCreateSuccess = (data) => ({
-  status: "success",
-  message: `Objeto criado com sucesso`,
-  data
-})
-
-
-const getResponseFindSuccess = (data) => ({
-  status: "success",
-  message: `Busca retornada com sucesso`,
-  total: data.length,
-  data
-})
-
-const getResponseFindOneSuccess = (data) => ({
-  status: "success",
-  message: `Consulta retornada com sucesso`,
-  data
-})
+const {
+  sendJSON,
+  setResponseJSON,
+  setResponseSuccess,
+  getResponseCreateSuccess,
+  getResponseFindSuccess,
+  getResponseFindOneSuccess,
+} = require('./lib/helpers')
 
 const ModelCeate = (req, res) => {
 
@@ -55,37 +32,48 @@ const ModelCeate = (req, res) => {
   // return data
 }
 
-const actions = (req, res) => ({
-  create: (_data) => { 
+const actions = ({
+  create: (req, res) => (_data) => { 
     return ModelCeate(req, res)
   },
-  find: (data) => { 
+  find: (req, res) => (data) => { 
     return sendJSON(
       setResponseSuccess(res, setResponseJSON()),
       getResponseFindOneSuccess(data))
   },
-  findOne: (data) => {
+  findOne: (req, res) => (data) => {
     return sendJSON(
       setResponseSuccess(res, setResponseJSON()),
       getResponseFindSuccess(data[0]))
   },
-  update: (data) => { 
+  update: (req, res) => (data) => { 
     res.write(sendJSON(data)) 
     res.end()
   },
-  remove: (data) => { 
+  remove: (req, res) => (data) => { 
     res.write(sendJSON(data)) 
     res.end()
   },
 })
 
+const routes = [
+  {
+    method: 'GET',
+    path: '/',
+    action: 'find'
+  }
+]
+
 const router = {
   run: require('./lib/run')(actions, ERRORS)
 }
 const server = http.createServer( ( req, res, next ) => {
-  res.writeHead( 200, { 'Content-Type': 'application/json' } )
-  return router.run(req, res, next)
+  // res.writeHead( 200, { 'Content-Type': 'application/json' } )
 } )
+
+server.on('request', (req, res) => {
+  router.run(req, res)
+})
 
 server.listen( 3000, () => {
   console.log( 'Server rodando de boas :D' )
