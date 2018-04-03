@@ -1,10 +1,3 @@
-const http = require( 'http' )
-const querystring = require( 'querystring' )
-
-const teste =[ {
-  Name: 'Adelmo Junior',
-  Age: 17
-}]
 
 const ERRORS = require('./lib/errors')
 
@@ -33,10 +26,10 @@ const ModelCeate = (req, res) => {
 }
 
 const actions = ({
-  create: (req, res) => (_data) => { 
+  create: (req, res) => (_data) => {
     return ModelCeate(req, res)
   },
-  find: (req, res) => (data) => { 
+  find: (req, res) => (data) => {
     return sendJSON(
       setResponseSuccess(res, setResponseJSON()),
       getResponseFindOneSuccess(data))
@@ -46,27 +39,14 @@ const actions = ({
       setResponseSuccess(res, setResponseJSON()),
       getResponseFindSuccess(data[0]))
   },
-  update: (req, res) => (data) => { 
-    res.write(sendJSON(data)) 
+  update: (req, res) => (data) => {
+    res.write(sendJSON(data))
     res.end()
   },
-  remove: (req, res) => (data) => { 
-    res.write(sendJSON(data)) 
+  remove: (req, res) => (data) => {
+    res.write(sendJSON(data))
     res.end()
   },
 })
 
-const router = {
-  use: require('./lib/use')(require('./routes'))
-}
-const server = http.createServer( ( req, res, next ) => {
-  // res.writeHead( 200, { 'Content-Type': 'application/json' } )
-} )
-
-server.on('request', (req, res) => {
-  router.use(req, res)
-})
-
-server.listen( 3000, () => {
-  console.log( 'Server rodando de boas :D' )
-} )
+module.exports = actions
