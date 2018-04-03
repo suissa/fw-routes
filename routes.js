@@ -1,10 +1,17 @@
 const router = require('./lib/router')
 const Controller = require('./controller')
 
-const teste = [{
-  Name: 'Adelmo Junior',
-  Age: 17
-}]
+const teste = [
+  {
+    id: 0,
+    name: 'Adelmo Junior',
+    age: 17
+  }, {
+    id: 1,
+    name: 'Suisseba da Periferia',
+    age: 33
+  }
+]
 
 router.get('/', (req, res, next) => {
   Controller.find(req, res)(teste)
