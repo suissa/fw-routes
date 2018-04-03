@@ -1,11 +1,9 @@
 const http = require('http')
 const server = http.createServer()
 
-const app = {
-  use: require('./lib')
-}
-
+const app = require('./lib')
 const routes = require('./routes')
+
 server.on('request', app.use(routes))
 
 server.listen( 3000, () => {
