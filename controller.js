@@ -35,9 +35,12 @@ const actions = ({
       getResponseFindOneSuccess(data))
   },
   findOne: (req, res) => (data) => {
+    console.log('------------------------------------');
+    console.log('findOne req.params', req.params);
+    console.log('------------------------------------');
     return sendJSON(
       setResponseSuccess(res, setResponseJSON()),
-      getResponseFindSuccess(data[0]))
+      getResponseFindSuccess(data[Number(req.params.id)]))
   },
   update: (req, res) => (data) => {
     res.write(sendJSON(data))

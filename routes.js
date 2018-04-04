@@ -16,7 +16,7 @@ const teste = [
 router.get('/', (req, res, next) => {
   Controller.find(req, res)(teste)
 })
-router.get('/123', (req, res, next) => {
+router.get('/:id', (req, res, next) => {
   Controller.findOne(req, res)(teste)
 })
 
