@@ -14,18 +14,27 @@ const teste = [
 ]
 
 router.get('/', (req, res, next) => {
+  console.log('------------------------------------');
+  console.log('req.params:', req.params);
+  console.log('------------------------------------');
+  console.log('req.query:', req.query);
+
   Controller.find(req, res)(teste)
 })
 router.get('/:id', (req, res, next) => {
   console.log('------------------------------------');
   console.log('req.params:', req.params);
   console.log('------------------------------------');
+  console.log('req.query:', req.query);
+
   Controller.findOne(req, res)(teste)
 })
 router.get('/:id/:name', (req, res, next) => {
   console.log('------------------------------------');
   console.log('req.params:', req.params);
   console.log('------------------------------------');
+  console.log('req.query:', req.query);
+
   Controller.findOne(req, res)(teste)
 })
 
