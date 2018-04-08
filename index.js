@@ -1,7 +1,7 @@
 const http = require('http')
 const server = http.createServer()
 
-const app = require('./lib')
+const app = require('./lib/index.funcional')
 const routes = require('./routes')
 
 server.on('request', app.use(routes))
